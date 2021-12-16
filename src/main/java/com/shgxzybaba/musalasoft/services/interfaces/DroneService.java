@@ -7,9 +7,9 @@ import com.shgxzybaba.musalasoft.dtos.MedicationApiModel;
 import java.util.List;
 
 public interface DroneService {
-    DroneApiModel registerDrone(DroneApiModel droneApiModel);
+    void registerDrone(DroneApiModel droneApiModel);
     void addMedication(DroneApiModel droneApiModel);
     List<MedicationApiModel> getLoadedMedications(DroneApiModel apiModel);
     List<DroneApiModel> getAvailableDrones(List<State> states);
-    DroneApiModel getBatteryLevel(DroneApiModel droneApiModel);
+    Integer getBatteryLevel(DroneApiModel droneApiModel);
 }
