@@ -12,12 +12,11 @@ import com.shgxzybaba.musalasoft.services.interfaces.ImageHandlingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,7 +43,7 @@ public class DefaultDroneService implements DroneService {
         drone.setModel(droneApiModel.getModel());
         drone.setState(State.IDLE);
         drone.setWeightLimit(droneApiModel.getWeightLimit());
-        drone.setSerialNumber(droneApiModel.getSerialNumber()); //todo: validation
+        drone.setSerialNumber(droneApiModel.getSerialNumber());
         drone.setBatteryCapacity(droneApiModel.getBatteryCapacity());
 
         droneRepository.save(drone);
@@ -52,7 +51,6 @@ public class DefaultDroneService implements DroneService {
 
     @Override
     public void addMedication(DroneApiModel droneApiModel) {
-
         Optional<Drone> drone = droneRepository.findById(droneApiModel.getSerialNumber());
         if (drone.isEmpty()) {
             throw  new NoSuchElementException("Drone with the given serial number not found!");
@@ -61,24 +59,53 @@ public class DefaultDroneService implements DroneService {
         if (drone.get().getBatteryCapacity() < minimumBatteryCapacity) {
             throw new UnsupportedOperationException("Cannot load a drone when the battery capacity is lower than " + minimumBatteryCapacity);
         }
-
-        List<Medication> medicationsToSave = new ArrayList<>();
-
-        double totalWeight = 0D;
-        for (MedicationApiModel i : droneApiModel.getMedications()) {
-            Medication m = i.toMedication();
-            String imageString = imageHandlingService.processImage(i.getImage());
-            m.setImage(imageString);
-            m.setDrone(drone.get());
-            medicationsToSave.add(m);
-            totalWeight = totalWeight + i.getWeight();
+        State previousState = drone.get().getState();
+        if (Arrays.asList(State.LOADING, State.DELIVERING, State.RETURNING).contains(previousState)) {
+            throw new UnsupportedOperationException("Cannot load a drone when it is  " + previousState.name());
         }
 
-        if (totalWeight > drone.get().getWeightLimit()) {
-            throw new UnsupportedOperationException("Cannot add medications above " + drone.get().getWeightLimit());
+        drone.get().setState(State.LOADING);
+        droneRepository.save(drone.get());
+
+        try {
+
+            List<Medication> medicationsToSave = new ArrayList<>();
+
+            double totalWeight = 0D;
+            for (MedicationApiModel i : droneApiModel.getMedications()) {
+                validateMedication(i);
+                Medication m = i.toMedication();
+                String imageString = imageHandlingService.processImage(i.getImage());
+                m.setImage(imageString);
+                m.setDrone(drone.get());
+                medicationsToSave.add(m);
+                totalWeight = totalWeight + i.getWeight();
+            }
+
+            if (State.LOADED.equals(previousState)) {
+                double existingWeight = medicationRepository.findAllByDrone_SerialNumber(drone.get().getSerialNumber()).stream().mapToDouble(Medication::getWeight).sum();
+                totalWeight = totalWeight + existingWeight;
+            } //assuming a drone can be loaded at multiple different locations before unloading
+
+            if (totalWeight > drone.get().getWeightLimit()) {
+                throw new UnsupportedOperationException("Cannot add medication(s) above " + drone.get().getWeightLimit());
+            }
+
+            medicationRepository.saveAll(medicationsToSave);
+        } finally {
+            drone.get().setState(previousState);
+            droneRepository.save(drone.get());
+        }
+    }
+
+    private void validateMedication(MedicationApiModel i) {
+        if (i.getName().matches("[^-a-zA-Z[0-9[\"_\"]]]")) {
+            throw new IllegalArgumentException("Medication name can only contain letters, numbers, ‘-‘, ‘_’");
         }
 
-        medicationRepository.saveAll(medicationsToSave);
+        if (i.getCode().matches("[^_A-Z0-9]")){
+            throw new IllegalArgumentException("Medication code can only contain upper case letters, numbers, and ‘_’");
+        }
     }
 
     @Override

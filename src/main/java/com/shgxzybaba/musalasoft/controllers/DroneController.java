@@ -5,6 +5,7 @@ import com.shgxzybaba.musalasoft.dtos.DroneApiModel;
 import com.shgxzybaba.musalasoft.dtos.MedicationApiModel;
 import com.shgxzybaba.musalasoft.services.interfaces.DroneService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -19,7 +20,7 @@ public class DroneController {
     private DroneService droneService;
 
     @PostMapping("/reqister")
-    public void registerDrone(@RequestBody DroneApiModel model) {
+    public void registerDrone(@RequestBody @Validated DroneApiModel model) {
         droneService.registerDrone(model);
     }
 

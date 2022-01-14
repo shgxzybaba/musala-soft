@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class DefaultImageHandlingServiceImpl implements ImageHandlingService {
     @Override
-    public String processImage(MultipartFile imageFile) {
-        return null;
+    public String processImage(String imageFile) {
+        return imageFile;
     }
 }
