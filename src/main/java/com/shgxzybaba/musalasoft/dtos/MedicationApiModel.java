@@ -4,9 +4,9 @@ import com.shgxzybaba.musalasoft.domain.Medication;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor

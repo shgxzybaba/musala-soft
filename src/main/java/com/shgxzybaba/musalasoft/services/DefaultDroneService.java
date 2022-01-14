@@ -17,6 +17,8 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,11 +104,12 @@ public class DefaultDroneService implements DroneService {
     }
 
     private void validateMedication(MedicationApiModel i) {
-        if (i.getName().matches("[^-a-zA-Z[0-9[\"_\"]]]")) {
+
+        if (Pattern.matches("[^-a-zA-Z[0-9[\"_\"]]]", i.getName())) {
             throw new IllegalArgumentException("Medication name can only contain letters, numbers, ‘-‘, ‘_’");
         }
 
-        if (i.getCode().matches("[^_A-Z0-9]")){
+        if (Pattern.matches("[^_A-Z0-9]", i.getCode())){
             throw new IllegalArgumentException("Medication code can only contain upper case letters, numbers, and ‘_’");
         }
     }
