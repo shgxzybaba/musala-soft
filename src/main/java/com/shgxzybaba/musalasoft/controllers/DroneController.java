@@ -29,7 +29,7 @@ public class DroneController {
         droneService.addMedication(model);
     }
 
-    @GetMapping("/drone/add-medications")
+    @GetMapping("/drone/get-medications")
     @ResponseBody
     public List<MedicationApiModel> getLoadedMedications(@RequestParam(required = true) String serialNumber) {
         return droneService.getLoadedMedications(new DroneApiModel(serialNumber));

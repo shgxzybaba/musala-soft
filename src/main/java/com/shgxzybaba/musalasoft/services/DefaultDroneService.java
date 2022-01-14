@@ -39,6 +39,9 @@ public class DefaultDroneService implements DroneService {
 
     @Override
     public void registerDrone(DroneApiModel droneApiModel) {
+        if (droneRepository.existsById(droneApiModel.getSerialNumber())) {
+            throw new UnsupportedOperationException("Drone with the specified serial number already exists!");
+        }
         Drone drone = new Drone();
         drone.setModel(droneApiModel.getModel());
         drone.setState(State.IDLE);
