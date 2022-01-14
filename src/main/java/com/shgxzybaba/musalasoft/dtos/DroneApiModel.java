@@ -1,5 +1,7 @@
 package com.shgxzybaba.musalasoft.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.shgxzybaba.musalasoft.domain.Drone;
 import com.shgxzybaba.musalasoft.domain.DroneModel;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DroneApiModel {
     @NotBlank
     private String serialNumber;
@@ -26,6 +29,11 @@ public class DroneApiModel {
 
     public DroneApiModel(String  serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public DroneApiModel(String  serialNumber, int batteryCapacity) {
+        this.serialNumber = serialNumber;
+        this.batteryCapacity = batteryCapacity;
     }
 
     public DroneApiModel(Drone i) {

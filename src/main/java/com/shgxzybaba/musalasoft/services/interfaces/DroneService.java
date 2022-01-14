@@ -11,5 +11,5 @@ public interface DroneService {
     void addMedication(DroneApiModel droneApiModel);
     List<MedicationApiModel> getLoadedMedications(DroneApiModel apiModel);
     List<DroneApiModel> getAvailableDrones(List<State> states);
-    Integer getBatteryLevel(DroneApiModel droneApiModel);
+    DroneApiModel getBatteryLevel(DroneApiModel droneApiModel);
 }

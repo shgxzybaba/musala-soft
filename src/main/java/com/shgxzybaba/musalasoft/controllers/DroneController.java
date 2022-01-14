@@ -44,7 +44,8 @@ public class DroneController {
     }
 
     @GetMapping("/drone/battery-level")
-    public Integer getBatteryLevel(@RequestParam String serialNumber) {
+    @ResponseBody
+    public DroneApiModel getBatteryLevel(@RequestParam String serialNumber) {
         return droneService.getBatteryLevel(new DroneApiModel(serialNumber));
     }
 

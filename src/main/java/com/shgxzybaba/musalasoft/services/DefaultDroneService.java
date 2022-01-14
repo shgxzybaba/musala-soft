@@ -31,7 +31,7 @@ public class DefaultDroneService implements DroneService {
     @Autowired
     public DefaultDroneService(DroneRepository droneRepository, ImageHandlingService imageHandlingService,
                                MedicationRepository medicationRepository,
-                               @Value("{minimum.load.battery:25}")Integer minimumBattery) {
+                               @Value("${minimum.load.battery:25}")Integer minimumBattery) {
         this.droneRepository = droneRepository;
         this.imageHandlingService = imageHandlingService;
         this.medicationRepository = medicationRepository;
@@ -45,6 +45,7 @@ public class DefaultDroneService implements DroneService {
         drone.setState(State.IDLE);
         drone.setWeightLimit(droneApiModel.getWeightLimit());
         drone.setSerialNumber(droneApiModel.getSerialNumber()); //todo: validation
+        drone.setBatteryCapacity(droneApiModel.getBatteryCapacity());
 
         droneRepository.save(drone);
     }
@@ -108,16 +109,16 @@ public class DefaultDroneService implements DroneService {
 
 
     @Override
-    public Integer getBatteryLevel(@NotNull DroneApiModel droneApiModel) {
+    public DroneApiModel getBatteryLevel(@NotNull DroneApiModel droneApiModel) {
         if (droneApiModel.getSerialNumber() == null || droneApiModel.getSerialNumber().isBlank()) {
             throw new IllegalArgumentException("Drone serial number cannot be blank!");
         }
-        DroneApiModel model;
+
         Optional<Drone> drone = droneRepository.findById(droneApiModel.getSerialNumber());
         if (drone.isEmpty()) {
             throw  new NoSuchElementException("Drone with the given serial number not found!");
         }
 
-        return drone.get().getBatteryCapacity();
+        return new DroneApiModel(drone.get().getSerialNumber(), drone.get().getBatteryCapacity());
     }
 }
