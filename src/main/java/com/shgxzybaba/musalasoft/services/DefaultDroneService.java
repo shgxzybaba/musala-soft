@@ -93,6 +93,10 @@ public class DefaultDroneService implements DroneService {
 
     @Override
     public List<DroneApiModel> getAvailableDrones(List<State> states) {
+        if (states.isEmpty()) {
+            return getIdleDrones();
+        }
+
         List<Drone> drones = droneRepository.findByStateIn(states);
         return drones.stream().map(DroneApiModel::new).collect(Collectors.toList());
     }

@@ -24,6 +24,10 @@ public class DroneApiModel {
     @Valid
     private List<MedicationApiModel> medications;
 
+    public DroneApiModel(String  serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
     public DroneApiModel(Drone i) {
         serialNumber = i.getSerialNumber();
         model = i.getModel();
