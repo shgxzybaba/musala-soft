@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,7 +26,7 @@ public class DroneApiModel {
     private double weightLimit;
     private int batteryCapacity;
     @Valid
-    private List<MedicationApiModel> medications;
+    private List<MedicationApiModel> medications = new ArrayList<>();
 
     public DroneApiModel(String  serialNumber) {
         this.serialNumber = serialNumber;
