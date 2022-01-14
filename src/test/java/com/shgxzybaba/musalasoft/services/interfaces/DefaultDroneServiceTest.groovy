@@ -4,16 +4,12 @@ import com.shgxzybaba.musalasoft.daos.DroneRepository
 import com.shgxzybaba.musalasoft.daos.MedicationRepository
 import com.shgxzybaba.musalasoft.domain.Drone
 import com.shgxzybaba.musalasoft.domain.DroneModel
-import com.shgxzybaba.musalasoft.domain.Medication
 import com.shgxzybaba.musalasoft.dtos.DroneApiModel
-import com.shgxzybaba.musalasoft.dtos.MedicationApiModel
+import com.shgxzybaba.musalasoft.services.DefaultDroneService
 import org.junit.jupiter.api.extension.ExtendWith
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.web.multipart.MultipartFile
-import spock.lang.Ignore
-import spock.lang.IgnoreRest
 import spock.lang.Specification
 
 @ExtendWith(SpringExtension)

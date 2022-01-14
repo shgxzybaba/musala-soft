@@ -1,4 +1,4 @@
-package com.shgxzybaba.musalasoft.services.interfaces;
+package com.shgxzybaba.musalasoft.services;
 
 import com.shgxzybaba.musalasoft.daos.DroneRepository;
 import com.shgxzybaba.musalasoft.daos.MedicationRepository;
@@ -7,6 +7,8 @@ import com.shgxzybaba.musalasoft.domain.Medication;
 import com.shgxzybaba.musalasoft.domain.State;
 import com.shgxzybaba.musalasoft.dtos.DroneApiModel;
 import com.shgxzybaba.musalasoft.dtos.MedicationApiModel;
+import com.shgxzybaba.musalasoft.services.interfaces.DroneService;
+import com.shgxzybaba.musalasoft.services.interfaces.ImageHandlingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -49,9 +51,6 @@ public class DefaultDroneService implements DroneService {
 
     @Override
     public void addMedication(DroneApiModel droneApiModel) {
-        //todo: add finally block to change the state from loading to idle
-        //todo: set the state to loading  while loading
-        //todo: prevent multiple threads from accessing the same drone
 
         Optional<Drone> drone = droneRepository.findById(droneApiModel.getSerialNumber());
         if (drone.isEmpty()) {
